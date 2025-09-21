@@ -1,0 +1,11 @@
+openapi: 3.0.3
+info:
+  title: Bank Recommendation API
+  version: 1.0.0
+paths:
+  /recommendations:
+    get:
+      summary: Получить рекомендации по сбережениям
+      responses:
+        '200':
+          description: Успешный ответ
