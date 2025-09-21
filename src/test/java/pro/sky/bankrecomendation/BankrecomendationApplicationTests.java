@@ -1,4 +1,4 @@
-package pro.sky.bankrecomendation.bankrecomendation;
+package pro.sky.bankrecomendation;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

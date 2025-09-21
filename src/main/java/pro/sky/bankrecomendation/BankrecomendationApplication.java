@@ -1,4 +1,4 @@
-package pro.sky.bankrecomendation.bankrecomendation;
+package pro.sky.bankrecomendation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
