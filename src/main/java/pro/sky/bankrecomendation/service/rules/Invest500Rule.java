@@ -20,12 +20,12 @@ public class Invest500Rule implements RecommendationRuleSet {
 
 
     @Override
-    public Optional<RecommendationDto> apply(UUID userId, UserFinancials m) {
+    public Optional<RecommendationDto> applyRuleSet(UUID userId, UserFinancials userFinancials) {
 // Правила:
 // 1) пользователь использует как минимум один продукт типа DEBIT
 // 2) пользователь не использует продукты типа INVEST
 // 3) сумма пополнений по продуктам типа SAVING > 1000 ₽
-        if (m.getCntDebitProducts() > 0 && m.getCntInvestProducts() == 0 && m.getSumSavingDeposits() > 1000.0) {
+        if (userFinancials.getCntDebitProducts() > 0 && userFinancials.getCntInvestProducts() == 0 && userFinancials.getSumSavingDeposits() > 1000.0) {
             return Optional.of(new RecommendationDto(PRODUCT_ID, NAME, TEXT));
         }
         return Optional.empty();

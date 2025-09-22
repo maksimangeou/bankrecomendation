@@ -18,14 +18,14 @@ public class SimpleCreditRule implements RecommendationRuleSet {
 
 
     @Override
-    public Optional<RecommendationDto> apply(UUID userId, UserFinancials m) {
+    public Optional<RecommendationDto> applyRuleSet(UUID userId, UserFinancials userFinancials) {
 // Правила:
 // - пользователь не использует продукты типа CREDIT
 // - сумма пополнений по всем DEBIT > сумма трат по всем DEBIT
 // - сумма трат по всем DEBIT > 100_000
 
 
-        if (m.getCntCreditProducts() == 0 && m.getSumDebitDeposits() > m.getSumDebitSpent() && m.getSumDebitSpent() > 100_000.0) {
+        if (userFinancials.getCntCreditProducts() == 0 && userFinancials.getSumDebitDeposits() > userFinancials.getSumDebitSpent() && userFinancials.getSumDebitSpent() > 100_000.0) {
             return Optional.of(new RecommendationDto(PRODUCT_ID, NAME, TEXT));
         }
         return Optional.empty();

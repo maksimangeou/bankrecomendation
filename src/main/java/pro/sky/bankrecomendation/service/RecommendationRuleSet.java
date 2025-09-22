@@ -11,5 +11,5 @@ public interface RecommendationRuleSet {
      * Проверяет правила для пользователя, используя агрегированные метрики.
      * Возвращает Optional с RecommendationDto если правило выполнено.
      */
-    Optional<RecommendationDto> apply(UUID userId, UserFinancials metrics);
+    Optional<RecommendationDto> applyRuleSet(UUID userId, UserFinancials metrics);
 }

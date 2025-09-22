@@ -43,7 +43,7 @@ public class RecommendationService {
 
         List<RecommendationDto> results = new ArrayList<>();
         for (RecommendationRuleSet r : ruleSets) {
-            r.apply(userId, metrics).ifPresent(results::add);
+            r.applyRuleSet(userId, metrics).ifPresent(results::add);
         }
 
 

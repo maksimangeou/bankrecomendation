@@ -17,7 +17,7 @@ class Invest500RuleTest {
     void whenConditionsMet_thenRecommend() {
         Invest500Rule rule = new Invest500Rule();
         UserFinancials m = new UserFinancials(1, 0, 0, 100.0, 10.0, 2000.0);
-        Optional<?> r = rule.apply(UUID.randomUUID(), m);
+        Optional<?> r = rule.applyRuleSet(UUID.randomUUID(), m);
         assertTrue(r.isPresent());
     }
 
@@ -26,7 +26,7 @@ class Invest500RuleTest {
     void whenNoSavings_thenNotRecommend() {
         Invest500Rule rule = new Invest500Rule();
         UserFinancials m = new UserFinancials(1, 0, 0, 100.0, 10.0, 500.0);
-        Optional<?> r = rule.apply(UUID.randomUUID(), m);
+        Optional<?> r = rule.applyRuleSet(UUID.randomUUID(), m);
         assertFalse(r.isPresent());
     }
 }
