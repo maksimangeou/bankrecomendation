@@ -6,4 +6,7 @@
 3. Настроить `application.properties`
 4. Запустить проект через `mvn spring-boot:run` 
 
+## Диаграмма компонентов
+
+![Диаграмма компонентов](docs/wiki/deployment_diagram.drawio)
 

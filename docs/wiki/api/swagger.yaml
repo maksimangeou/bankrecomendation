@@ -3,9 +3,15 @@ info:
   title: Bank Recommendation API
   version: 1.0.0
 paths:
-  /recommendations:
-    get:
-      summary: Получить рекомендации по сбережениям
-      responses:
-        '200':
-          description: Успешный ответ
+  Request: GET /recommendation/<user_id>
+  Response: 200 OK
+  Content-Type: application/json
+  {
+    "user_id": <user_id>,
+    "recommendations": [
+      {
+        "name": <имя продукта>,
+        "id": <id продукта>,
+        "text": "текстовое описание продукта" }
+    ]
+  }
