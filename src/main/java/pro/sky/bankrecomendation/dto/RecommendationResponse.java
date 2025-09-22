@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecommendationResponse {
-    // Field name EXACTLY as required by the task: user_id
+
     private UUID user_id;
     private List<RecommendationDto> recommendations;
 }

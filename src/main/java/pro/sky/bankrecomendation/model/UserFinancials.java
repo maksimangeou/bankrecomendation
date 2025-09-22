@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserFinancials {
-    // Aggregated metrics used by rules
+
     private long cntDebitProducts;
     private long cntInvestProducts;
     private long cntCreditProducts;

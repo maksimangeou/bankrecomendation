@@ -37,7 +37,6 @@ public class RecommendationService {
         log.debug("Start computing recommendations for user={} ", userId);
 
 
-// Получаем агрегированные финансовые метрики одним запросом
         UserFinancials metrics = repository.getUserFinancials(userId);
 
 
@@ -46,8 +45,6 @@ public class RecommendationService {
             r.applyRuleSet(userId, metrics).ifPresent(results::add);
         }
 
-
-// Формируем ответ строго в нужном формате
         return new RecommendationResponse(userId, results);
     }
 }

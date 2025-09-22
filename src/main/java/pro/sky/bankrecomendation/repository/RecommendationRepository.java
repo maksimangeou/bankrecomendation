@@ -39,7 +39,6 @@ public class RecommendationRepository {
                      "WHERE t.USER_ID = ?\n";
 
 
-// Map result to UserFinancials
         return jdbcTemplate.queryForObject(sql, new Object[]{userId.toString()}, (rs, rowNum) -> mapRow(rs));
     }
 

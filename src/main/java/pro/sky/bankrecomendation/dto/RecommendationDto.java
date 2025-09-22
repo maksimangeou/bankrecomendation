@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecommendationDto {
-    // id - UUID of the product
+
     private UUID id;
     private String name;
     private String text;
