@@ -18,4 +18,4 @@
 Смотрите [deployment guide](docs/wiki/deployment.md)
 
 ## GitHub Project
-[Project board](https://github.com/<username>/bank-recommendation/projects)
+[Project board](https://github.com/maksimangeou/bankrecomendation)
