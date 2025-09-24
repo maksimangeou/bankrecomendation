@@ -13,22 +13,19 @@ import java.util.UUID;
 @RequestMapping("/recommendation")
 public class RecommendationController {
 
-
     private static final Logger log = LoggerFactory.getLogger(RecommendationController.class);
 
-
     private final RecommendationService recommendationService;
-
 
     public RecommendationController(RecommendationService recommendationService) {
         this.recommendationService = recommendationService;
     }
 
-
     @GetMapping("/{userId}")
     public ResponseEntity<RecommendationResponse> getRecommendation(@PathVariable UUID userId) {
-        log.debug("Received recommendation request for user={}", userId);
+        log.info("Received recommendation request for user={}", userId);
         RecommendationResponse resp = recommendationService.getRecommendations(userId);
+        log.info("Returning {} recommendations for user={}", resp.getRecommendations().size(), userId);
         return ResponseEntity.ok(resp);
     }
 }

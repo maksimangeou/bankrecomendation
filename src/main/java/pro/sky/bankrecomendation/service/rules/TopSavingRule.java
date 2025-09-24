@@ -1,5 +1,7 @@
 package pro.sky.bankrecomendation.service.rules;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.bankrecomendation.dto.RecommendationDto;
 import pro.sky.bankrecomendation.model.UserFinancials;
@@ -11,28 +13,27 @@ import java.util.UUID;
 @Component
 public class TopSavingRule implements RecommendationRuleSet {
 
+    private static final Logger logger = LoggerFactory.getLogger(TopSavingRule.class);
 
-    private static final UUID PRODUCT_ID = UUID.fromString("59efc529-2fff-41af-baff-90ccd7402925");
-    private static final String NAME = "Top Saving";
-    private static final String TEXT = "Откройте свою собственную «Копилку" + " с нашим банком!";
-
+    // UUID продукта "Накопительный счет"
+    private static final UUID PRODUCT_ID = UUID.fromString("f84e92c7-7ef0-40ac-8a9e-0e13b991c21d");
 
     @Override
-    public Optional<RecommendationDto> applyRuleSet(UUID userId, UserFinancials userFinancials) {
-// Правила (все через AND между правилами):
-// - пользователь использует как минимум один продукт типа DEBIT
-// - (сумма пополнений по всем DEBIT >= 50000 OR сумма пополнений по SAVING >= 50000)
-// - сумма пополнений по всем DEBIT > сумма трат по всем DEBIT
+    public Optional<RecommendationDto> applyRuleSet(UUID userId, UserFinancials metrics) {
+        logger.info("Применение правила TopSavingRule для пользователя {}", userId);
 
+        if (metrics.getSumSavingDeposits() == 0 && metrics.getSumDebitDeposits() >= 50_000.0) {
 
-        boolean first = userFinancials.getCntDebitProducts() > 0;
-        boolean second = (userFinancials.getSumDebitDeposits() >= 50_000.0) || (userFinancials.getSumSavingDeposits() >= 50_000.0);
-        boolean third = userFinancials.getSumDebitDeposits() > userFinancials.getSumDebitSpent();
+            logger.info("Рекомендован сберегательный продукт: Накопительный счет для пользователя {}", userId);
 
-
-        if (first && second && third) {
-            return Optional.of(new RecommendationDto(PRODUCT_ID, NAME, TEXT));
+            return Optional.of(new RecommendationDto(
+                    PRODUCT_ID,
+                    "Накопительный счёт",
+                    "Начните копить с повышенной процентной ставкой и гибкими условиями!"
+            ));
         }
+
+        logger.info("Правило TopSavingRule не сработало для пользователя {}", userId);
         return Optional.empty();
     }
 }
