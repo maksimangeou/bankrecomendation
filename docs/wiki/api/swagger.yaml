@@ -1,0 +1,17 @@
+openapi: 3.0.3
+info:
+  title: Bank Recommendation API
+  version: 1.0.0
+paths:
+  Request: GET /recommendation/<user_id>
+  Response: 200 OK
+  Content-Type: application/json
+  {
+    "user_id": <user_id>,
+    "recommendations": [
+      {
+        "name": <имя продукта>,
+        "id": <id продукта>,
+        "text": "текстовое описание продукта" }
+    ]
+  }
