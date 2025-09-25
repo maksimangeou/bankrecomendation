@@ -1,0 +1,26 @@
+@startuml
+title Activity Diagram — Получение рекомендаций
+
+start
+
+:Пользователь вызывает GET /recommendation/{userId};
+
+:RecommendationController получает запрос;
+:RecommendationService вызывает getUserFinancials(userId);
+
+:RecommendationRepository делает SQL-запрос в H2;
+:Формируется UserFinancials DTO;
+
+if (Есть активные правила?) then (Да)
+  :Прогон через Invest500Rule;
+  :Прогон через SimpleCreditRule;
+  :Прогон через TopSavingRule;
+  :Собрать список рекомендаций;
+else (Нет)
+  :Вернуть пустой список;
+endif
+
+:RecommendationController возвращает RecommendationResponse;
+
+stop
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+title Deployment Diagram — bankrecomendation
+
+node "Клиент" {
+  [Browser/Postman]
+}
+
+node "Сервер" {
+  artifact "Spring Boot App" {
+    [RecommendationController]
+    [RecommendationService]
+    [Rules Engine]
+    [Repository Layer]
+  }
+}
+
+node "База данных" {
+  database "H2 Database"
+}
+
+[Browser/Postman] --> [RecommendationController]
+[RecommendationController] --> [RecommendationService]
+[RecommendationService] --> [Repository Layer]
+[Repository Layer] --> "H2 Database"
+@enduml

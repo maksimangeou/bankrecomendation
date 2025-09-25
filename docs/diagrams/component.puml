@@ -1,0 +1,33 @@
+@startuml
+title Компонентная диаграмма — bankrecomendation
+
+package "API Layer" {
+  [RecommendationController]
+}
+
+package "Service Layer" {
+  [RecommendationService]
+}
+
+package "Rules" {
+  [RecommendationRuleSet <<interface>>]
+  [Invest500Rule]
+  [SimpleCreditRule]
+  [TopSavingRule]
+}
+
+package "Data Layer" {
+  [RecommendationRepository]
+  [UserFinancials <<DTO>>]
+  database "H2 Database" as H2
+}
+
+[Swagger/OpenAPI] --> [RecommendationController]
+[RecommendationController] --> [RecommendationService]
+[RecommendationService] --> [RecommendationRepository]
+[RecommendationRepository] --> H2
+[RecommendationService] --> [RecommendationRuleSet]
+[RecommendationRuleSet] <|-- [Invest500Rule]
+[RecommendationRuleSet] <|-- [SimpleCreditRule]
+[RecommendationRuleSet] <|-- [TopSavingRule]
+@enduml
