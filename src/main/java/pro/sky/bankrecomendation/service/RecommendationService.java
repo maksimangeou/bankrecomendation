@@ -1,9 +1,9 @@
 package pro.sky.bankrecomendation.service;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.bankrecomendation.dto.RecommendationDto;
-import org.slf4j.LoggerFactory;
 import pro.sky.bankrecomendation.dto.RecommendationResponse;
 import pro.sky.bankrecomendation.model.UserFinancials;
 import pro.sky.bankrecomendation.repository.RecommendationRepository;

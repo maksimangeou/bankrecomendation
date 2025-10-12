@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.bankrecomendation.dto.dynamic.*;
 import pro.sky.bankrecomendation.model.dynamic.DynamicRule;
-import pro.sky.bankrecomendation.model.dynamic.RuleCondition;
 import pro.sky.bankrecomendation.repository.dynamic.DynamicRuleRepository;
 import pro.sky.bankrecomendation.service.DynamicRuleMapper;
 
@@ -27,26 +26,38 @@ public class DynamicRuleController {
 
     @PostMapping
     public ResponseEntity<DynamicRuleResponse> createRule(@RequestBody DynamicRuleRequest request) {
-        DynamicRule rule = mapper.toEntity(request);
-        DynamicRule saved = dynamicRuleRepository.save(rule);
-        return ResponseEntity.ok(mapper.toResponse(saved));
+        try {
+            DynamicRule rule = mapper.toEntity(request);
+            DynamicRule saved = dynamicRuleRepository.save(rule);
+            return ResponseEntity.ok(mapper.toResponse(saved));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping
     public ResponseEntity<DynamicRulesListResponse> getAllRules() {
-        List<DynamicRule> rules = dynamicRuleRepository.findAll();
-        List<DynamicRuleResponse> responseList = rules.stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new DynamicRulesListResponse(responseList));
+        try {
+            List<DynamicRule> rules = dynamicRuleRepository.findAll();
+            List<DynamicRuleResponse> responseList = rules.stream()
+                    .map(mapper::toResponse)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(new DynamicRulesListResponse(responseList));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @DeleteMapping("/{ruleId}")
     public ResponseEntity<Void> deleteRule(@PathVariable UUID ruleId) {
-        if (dynamicRuleRepository.existsById(ruleId)) {
-            dynamicRuleRepository.deleteById(ruleId);
-            return ResponseEntity.noContent().build();
+        try {
+            if (dynamicRuleRepository.existsById(ruleId)) {
+                dynamicRuleRepository.deleteById(ruleId);
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.notFound().build();
     }
 }
