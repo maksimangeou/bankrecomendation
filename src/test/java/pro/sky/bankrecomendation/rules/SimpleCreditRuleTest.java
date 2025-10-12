@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pro.sky.bankrecomendation.dto.RecommendationDto;
 import pro.sky.bankrecomendation.model.UserFinancials;
-import pro.sky.bankrecomendation.service.rules.SimpleCreditRule;
 
 import java.util.Optional;
 import java.util.UUID;

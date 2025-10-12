@@ -2,7 +2,6 @@ package pro.sky.bankrecomendation.rules;
 
 import org.junit.jupiter.api.Test;
 import pro.sky.bankrecomendation.model.UserFinancials;
-import pro.sky.bankrecomendation.service.rules.Invest500Rule;
 
 import java.util.Optional;
 import java.util.UUID;
