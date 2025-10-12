@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,14 +24,18 @@ public class RuleCondition {
     private QueryType query;
 
     @ElementCollection
-    @CollectionTable(name = "condition_arguments", joinColumns = @JoinColumn(name = "condition_id"))
+    @CollectionTable(
+            name = "condition_arguments",
+            joinColumns = @JoinColumn(name = "condition_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"condition_id", "argument"})
+    )
     @Column(name = "argument")
-    private List<String> arguments;
+    private List<String> arguments = new ArrayList<>();
 
     @Column(name = "negate", nullable = false)
     private boolean negate;
 
-    @ManyToOne
-    @JoinColumn(name = "rule_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rule_id", nullable = false)
     private DynamicRule rule;
 }

@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.List;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -25,9 +24,10 @@ public class DynamicRule {
     @Column(name = "product_id", nullable = false)
     private UUID productId;
 
-    @Column(name = "product_text", nullable = false, length = 1000)
+    @Column(name = "product_text", nullable = false, columnDefinition = "TEXT")
     private String productText;
 
-    @OneToMany(mappedBy = "rule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<RuleCondition> conditions;
+    // Храним правило как JSON для упрощения
+    @Column(name = "rule_json", nullable = false, columnDefinition = "TEXT")
+    private String ruleJson;
 }

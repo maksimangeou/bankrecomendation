@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-dynamic-rules-table
+      author: maksimzadoroznyj
+      changes:
+        - createTable:
+            tableName: dynamic_rules
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_text
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rule_json
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 002-create-indexes
+      author: maksimzadoroznyj
+      changes:
+        - createIndex:
+            tableName: dynamic_rules
+            columns:
+              - column:
+                  name: product_id
+            indexName: idx_dynamic_rules_product_id
+        - createIndex:
+            tableName: dynamic_rules
+            columns:
+              - column:
+                  name: product_name
+            indexName: idx_dynamic_rules_product_name

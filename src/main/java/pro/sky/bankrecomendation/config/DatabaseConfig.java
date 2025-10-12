@@ -13,6 +13,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @Configuration
@@ -31,7 +33,7 @@ public class DatabaseConfig {
     }
 
     @Bean(name = "secondaryDataSource")
-    @ConfigurationProperties("spring.datasource.secondary")
+    @ConfigurationProperties("app.datasource.secondary")
     public DataSource secondaryDataSource() {
         return DataSourceBuilder.create().build();
     }
@@ -57,7 +59,7 @@ public class DatabaseConfig {
         em.setJpaVendorAdapter(vendorAdapter);
 
         Properties props = new Properties();
-        props.put("hibernate.hbm2ddl.auto", "none");
+        props.put("hibernate.hbm2ddl.auto", "validate");
         props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         props.put("hibernate.show_sql", "true");
         props.put("hibernate.format_sql", "true");
