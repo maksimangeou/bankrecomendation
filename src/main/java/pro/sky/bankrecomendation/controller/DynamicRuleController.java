@@ -1,63 +1,53 @@
 package pro.sky.bankrecomendation.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pro.sky.bankrecomendation.dto.dynamic.*;
-import pro.sky.bankrecomendation.model.dynamic.DynamicRule;
-import pro.sky.bankrecomendation.repository.dynamic.DynamicRuleRepository;
-import pro.sky.bankrecomendation.service.DynamicRuleMapper;
+import pro.sky.bankrecomendation.dto.dynamic.DynamicRuleRequest;
+import pro.sky.bankrecomendation.dto.dynamic.DynamicRuleResponse;
+import pro.sky.bankrecomendation.dto.dynamic.DynamicRulesListResponse;
+import pro.sky.bankrecomendation.service.DynamicRuleService;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rule")
 public class DynamicRuleController {
 
-    private final DynamicRuleRepository dynamicRuleRepository;
-    private final DynamicRuleMapper mapper;
+    private static final Logger log = LoggerFactory.getLogger(DynamicRuleController.class);
 
-    public DynamicRuleController(DynamicRuleRepository dynamicRuleRepository,
-                                 DynamicRuleMapper mapper) {
-        this.dynamicRuleRepository = dynamicRuleRepository;
-        this.mapper = mapper;
+    private final DynamicRuleService dynamicRuleService;
+
+    public DynamicRuleController(DynamicRuleService dynamicRuleService) {
+        this.dynamicRuleService = dynamicRuleService;
     }
 
     @PostMapping
     public ResponseEntity<DynamicRuleResponse> createRule(@RequestBody DynamicRuleRequest request) {
-        try {
-            DynamicRule rule = mapper.toEntity(request);
-            DynamicRule saved = dynamicRuleRepository.save(rule);
-            return ResponseEntity.ok(mapper.toResponse(saved));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        log.debug("POST /rule - Creating new dynamic rule");
+        DynamicRuleResponse response = dynamicRuleService.createRule(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<DynamicRulesListResponse> getAllRules() {
-        try {
-            List<DynamicRule> rules = dynamicRuleRepository.findAll();
-            List<DynamicRuleResponse> responseList = rules.stream()
-                    .map(mapper::toResponse)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(new DynamicRulesListResponse(responseList));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        log.debug("GET /rule - Retrieving all dynamic rules");
+        DynamicRulesListResponse response = dynamicRuleService.getAllRules();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{ruleId}")
+    public ResponseEntity<DynamicRuleResponse> getRule(@PathVariable UUID ruleId) {
+        log.debug("GET /rule/{} - Retrieving dynamic rule", ruleId);
+        DynamicRuleResponse response = dynamicRuleService.getRuleById(ruleId);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{ruleId}")
     public ResponseEntity<Void> deleteRule(@PathVariable UUID ruleId) {
-        try {
-            if (dynamicRuleRepository.existsById(ruleId)) {
-                dynamicRuleRepository.deleteById(ruleId);
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        log.debug("DELETE /rule/{} - Deleting dynamic rule", ruleId);
+        dynamicRuleService.deleteRule(ruleId);
+        return ResponseEntity.noContent().build();
     }
 }
