@@ -13,7 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DynamicRule {
-
     @Id
     private UUID id;
     private String productName;

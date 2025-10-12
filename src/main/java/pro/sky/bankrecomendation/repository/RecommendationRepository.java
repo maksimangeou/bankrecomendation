@@ -2,6 +2,7 @@ package pro.sky.bankrecomendation.repository;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import pro.sky.bankrecomendation.model.UserFinancials;
@@ -25,7 +26,7 @@ public class RecommendationRepository {
     // Кеш для сумм транзакций
     private final Cache<String, Double> transactionSumCache;
 
-    public RecommendationRepository(JdbcTemplate jdbcTemplate) {
+    public RecommendationRepository(@Qualifier("primaryJdbcTemplate") JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
 
         this.userFinancialsCache = Caffeine.newBuilder()
