@@ -4,28 +4,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import pro.sky.bankrecomendation.model.UserFinancials;
 
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-
 @Repository
 public class RecommendationRepository {
 
-
     private final JdbcTemplate jdbcTemplate;
-
 
     public RecommendationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
-    /**
-     * Получает агрегированные финансовые метрики по пользователю.
-     * Все нужные данные выбираются одним SQL-запросом для производительности.
-     */
     public UserFinancials getUserFinancials(UUID userId) {
         String sql = "SELECT\n" +
                      " COALESCE(SUM(CASE WHEN p.type = 'DEBIT' AND t.type = 'DEPOSIT' THEN t.amount ELSE 0 END), 0) AS sum_debit_deposits,\n" +
@@ -38,10 +29,30 @@ public class RecommendationRepository {
                      "JOIN PRODUCTS p ON t.PRODUCT_ID = p.ID\n" +
                      "WHERE t.USER_ID = ?\n";
 
-
         return jdbcTemplate.queryForObject(sql, new Object[]{userId.toString()}, (rs, rowNum) -> mapRow(rs));
     }
 
+    // Новые методы для динамических правил
+    public boolean isUserOfProductType(UUID userId, String productType) {
+        String sql = "SELECT COUNT(*) > 0 FROM TRANSACTIONS t " +
+                     "JOIN PRODUCTS p ON t.PRODUCT_ID = p.ID " +
+                     "WHERE t.USER_ID = ? AND p.type = ?";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, userId.toString(), productType);
+    }
+
+    public boolean isActiveUserOfProductType(UUID userId, String productType) {
+        String sql = "SELECT COUNT(*) >= 5 FROM TRANSACTIONS t " +
+                     "JOIN PRODUCTS p ON t.PRODUCT_ID = p.ID " +
+                     "WHERE t.USER_ID = ? AND p.type = ?";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, userId.toString(), productType);
+    }
+
+    public Double getTransactionSum(UUID userId, String productType, String transactionType) {
+        String sql = "SELECT COALESCE(SUM(t.amount), 0) FROM TRANSACTIONS t " +
+                     "JOIN PRODUCTS p ON t.PRODUCT_ID = p.ID " +
+                     "WHERE t.USER_ID = ? AND p.type = ? AND t.type = ?";
+        return jdbcTemplate.queryForObject(sql, Double.class, userId.toString(), productType, transactionType);
+    }
 
     private UserFinancials mapRow(ResultSet rs) throws SQLException {
         UserFinancials m = new UserFinancials();

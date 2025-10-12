@@ -1,6 +1,5 @@
 package pro.sky.bankrecomendation.config;
 
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +26,8 @@ public class DatabaseConfig {
     @Primary
     @Bean(name = "defaultDataSource")
     @ConfigurationProperties("spring.datasource")
-    public DataSource defaultDataSource(DataSourceProperties properties) {
-        return properties.initializeDataSourceBuilder().build();
+    public DataSource defaultDataSource() {
+        return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "secondaryDataSource")
@@ -40,7 +39,7 @@ public class DatabaseConfig {
     @Primary
     @Bean(name = "defaultJdbcTemplate")
     public JdbcTemplate defaultJdbcTemplate() {
-        return new JdbcTemplate(defaultDataSource(null));
+        return new JdbcTemplate(defaultDataSource());
     }
 
     @Bean(name = "secondaryJdbcTemplate")
@@ -48,7 +47,6 @@ public class DatabaseConfig {
         return new JdbcTemplate(secondaryDataSource());
     }
 
-    @Primary
     @Bean(name = "secondaryEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean secondaryEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -59,8 +57,10 @@ public class DatabaseConfig {
         em.setJpaVendorAdapter(vendorAdapter);
 
         Properties props = new Properties();
-        props.put("hibernate.hbm2ddl.auto", "validate");
+        props.put("hibernate.hbm2ddl.auto", "none");
         props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        props.put("hibernate.show_sql", "true");
+        props.put("hibernate.format_sql", "true");
         em.setJpaProperties(props);
 
         return em;
