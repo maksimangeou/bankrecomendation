@@ -1,5 +1,6 @@
 package pro.sky.bankrecomendation.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,8 @@ public class TelegramBotConfig {
     }
 
     @Bean
-    public BankRecommendationBankRecommendationBot bankRecommendationBot() {
-        return new BankRecommendationBot(botToken, botName);
+    public BankRecommendationBot bankRecommendationBot(pro.sky.bankrecomendation.service.RecommendationService recommendationService,
+                                                       @Qualifier("primaryJdbcTemplate") org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
+        return new BankRecommendationBot(botToken, botName, recommendationService, jdbcTemplate);
     }
 }
