@@ -40,7 +40,7 @@ public class DynamicRuleEngine {
                 }
                 result = result && conditionResult;
 
-                if (!result) break; // Short-circuit evaluation
+                if (!result) break;
             }
 
             return result;

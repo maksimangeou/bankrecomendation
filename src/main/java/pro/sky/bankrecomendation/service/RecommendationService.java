@@ -36,12 +36,10 @@ public class RecommendationService {
 
         List<RecommendationDto> results = new ArrayList<>();
 
-        // Старые фиксированные правила
         for (RecommendationRuleSet r : ruleSets) {
             r.applyRuleSet(userId, metrics).ifPresent(results::add);
         }
 
-        // Новые динамические правила
         List<RecommendationDto> dynamicResults = dynamicRuleService.evaluateDynamicRules(userId, metrics);
         results.addAll(dynamicResults);
 

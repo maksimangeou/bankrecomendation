@@ -47,7 +47,6 @@ public class DynamicRuleService {
         DynamicRule rule = mapper.toEntity(request);
         DynamicRule saved = dynamicRuleRepository.save(rule);
 
-        // Create initial statistics entry
         statisticsRepository.createStatisticsEntry(saved.getId());
 
         log.info("Dynamic rule created successfully. Rule ID: {}, Product: {}",
@@ -76,7 +75,6 @@ public class DynamicRuleService {
             throw new DynamicRuleNotFoundException(ruleId);
         }
 
-        // Delete statistics first due to foreign key constraint
         statisticsRepository.deleteByRuleId(ruleId);
         dynamicRuleRepository.deleteById(ruleId);
 
