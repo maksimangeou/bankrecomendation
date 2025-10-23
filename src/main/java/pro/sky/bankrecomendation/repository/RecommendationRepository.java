@@ -103,7 +103,6 @@ public class RecommendationRepository {
         return m;
     }
 
-    // Метод для очистки кеша (может быть полезен при тестировании)
     public void clearCache() {
         userFinancialsCache.invalidateAll();
         productUsageCache.invalidateAll();

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pro.sky.bankrecomendation.dto.dynamic.DynamicRuleRequest;
 import pro.sky.bankrecomendation.dto.dynamic.DynamicRuleResponse;
 import pro.sky.bankrecomendation.dto.dynamic.DynamicRulesListResponse;
+import pro.sky.bankrecomendation.dto.dynamic.RuleStatisticsListResponse;
 import pro.sky.bankrecomendation.service.DynamicRuleService;
 
 import java.util.UUID;
@@ -49,5 +50,12 @@ public class DynamicRuleController {
         log.debug("DELETE /rule/{} - Deleting dynamic rule", ruleId);
         dynamicRuleService.deleteRule(ruleId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<RuleStatisticsListResponse> getRuleStatistics() {
+        log.debug("GET /rule/stats - Retrieving rule statistics");
+        RuleStatisticsListResponse response = dynamicRuleService.getRuleStatistics();
+        return ResponseEntity.ok(response);
     }
 }

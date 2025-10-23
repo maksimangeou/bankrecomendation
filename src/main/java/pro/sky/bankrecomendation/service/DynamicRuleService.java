@@ -3,15 +3,16 @@ package pro.sky.bankrecomendation.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.bankrecomendation.dto.RecommendationDto;
-import pro.sky.bankrecomendation.dto.dynamic.DynamicRuleRequest;
-import pro.sky.bankrecomendation.dto.dynamic.DynamicRuleResponse;
-import pro.sky.bankrecomendation.dto.dynamic.DynamicRulesListResponse;
+import pro.sky.bankrecomendation.dto.dynamic.*;
 import pro.sky.bankrecomendation.exception.DynamicRuleNotFoundException;
 import pro.sky.bankrecomendation.exception.DynamicRuleValidationException;
 import pro.sky.bankrecomendation.model.UserFinancials;
 import pro.sky.bankrecomendation.model.dynamic.DynamicRule;
+import pro.sky.bankrecomendation.model.dynamic.RuleStatistics;
 import pro.sky.bankrecomendation.repository.dynamic.DynamicRuleRepository;
+import pro.sky.bankrecomendation.repository.dynamic.RuleStatisticsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,20 +25,29 @@ public class DynamicRuleService {
     private static final Logger log = LoggerFactory.getLogger(DynamicRuleService.class);
 
     private final DynamicRuleRepository dynamicRuleRepository;
+    private final RuleStatisticsRepository statisticsRepository;
     private final DynamicRuleMapper mapper;
+    private final DynamicRuleEngine dynamicRuleEngine;
 
     public DynamicRuleService(DynamicRuleRepository dynamicRuleRepository,
-                              DynamicRuleMapper mapper) {
+                              RuleStatisticsRepository statisticsRepository,
+                              DynamicRuleMapper mapper,
+                              DynamicRuleEngine dynamicRuleEngine) {
         this.dynamicRuleRepository = dynamicRuleRepository;
+        this.statisticsRepository = statisticsRepository;
         this.mapper = mapper;
+        this.dynamicRuleEngine = dynamicRuleEngine;
     }
 
+    @Transactional
     public DynamicRuleResponse createRule(DynamicRuleRequest request) {
         validateRuleRequest(request);
         log.debug("Creating new dynamic rule for product: {}", request.getProductName());
 
         DynamicRule rule = mapper.toEntity(request);
         DynamicRule saved = dynamicRuleRepository.save(rule);
+
+        statisticsRepository.createStatisticsEntry(saved.getId());
 
         log.info("Dynamic rule created successfully. Rule ID: {}, Product: {}",
                 saved.getId(), saved.getProductName());
@@ -57,6 +67,7 @@ public class DynamicRuleService {
         return new DynamicRulesListResponse(responseList);
     }
 
+    @Transactional
     public void deleteRule(UUID ruleId) {
         log.debug("Attempting to delete dynamic rule with ID: {}", ruleId);
 
@@ -64,7 +75,9 @@ public class DynamicRuleService {
             throw new DynamicRuleNotFoundException(ruleId);
         }
 
+        statisticsRepository.deleteByRuleId(ruleId);
         dynamicRuleRepository.deleteById(ruleId);
+
         log.info("Dynamic rule deleted successfully. Rule ID: {}", ruleId);
     }
 
@@ -91,13 +104,18 @@ public class DynamicRuleService {
             List<RecommendationDto> results = new ArrayList<>();
 
             for (DynamicRule rule : rules) {
-                // Временная логика - всегда возвращаем рекомендацию для тестирования
-                // В реальной реализации здесь будет проверка условий
-                results.add(new RecommendationDto(
-                        rule.getProductId(),
-                        rule.getProductName(),
-                        rule.getProductText()
-                ));
+                boolean ruleTriggered = dynamicRuleEngine.evaluateRule(rule, userId, metrics);
+
+                if (ruleTriggered) {
+                    // Increment statistics
+                    statisticsRepository.incrementTriggerCount(rule.getId());
+
+                    results.add(new RecommendationDto(
+                            rule.getProductId(),
+                            rule.getProductName(),
+                            rule.getProductText()
+                    ));
+                }
             }
 
             log.debug("Found {} dynamic recommendations for user: {}", results.size(), userId);
@@ -107,6 +125,22 @@ public class DynamicRuleService {
             log.error("Error evaluating dynamic rules for user: {}", userId, e);
             return List.of();
         }
+    }
+
+    public RuleStatisticsListResponse getRuleStatistics() {
+        log.debug("Retrieving rule statistics");
+
+        List<DynamicRule> allRules = dynamicRuleRepository.findAll();
+        List<RuleStatisticResponse> stats = allRules.stream()
+                .map(rule -> {
+                    Long count = statisticsRepository.findByRuleId(rule.getId())
+                            .map(RuleStatistics::getTriggerCount)
+                            .orElse(0L);
+                    return new RuleStatisticResponse(rule.getId(), count);
+                })
+                .collect(Collectors.toList());
+
+        return new RuleStatisticsListResponse(stats);
     }
 
     private void validateRuleRequest(DynamicRuleRequest request) {

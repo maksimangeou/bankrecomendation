@@ -49,3 +49,58 @@ databaseChangeLog:
               - column:
                   name: product_name
             indexName: idx_dynamic_rules_product_name
+
+  - changeSet:
+      id: 003-create-rule-stats-table
+      author: maksimzadoroznyj
+      changes:
+        - createTable:
+            tableName: rule_statistics
+            columns:
+              - column:
+                  name: rule_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: fk_rule_stats_rule_id
+                    references: dynamic_rules(id)
+                    deleteCascade: true
+              - column:
+                  name: trigger_count
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    defaultValue: 0
+
+  - changeSet:
+      id: 004-create-users-table
+      author: maksimzadoroznyj
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+
+        - createIndex:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+            indexName: idx_users_username
