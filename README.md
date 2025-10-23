@@ -3,19 +3,16 @@
 ## Overview
 Проект предназначен для анализа финансовых транзакций пользователя и генерации персональных рекомендаций по расходам и сбережениям.
 
-## Requirements
-Смотрите [requirements](docs/wiki/requirements.md).
+# Содержание
 
-## Diagrams
-- [Компоненты](docs/wiki/diagrams/components.drawio)
-- [Классы](docs/wiki/diagrams/classes.drawio)
-- [Activity Diagram](docs/wiki/diagrams/activity.drawio)
+1. [Описание системы](https://github.com/maksimangeou/bankrecomendation/wiki/1.-Описание-системы)
+2. [Требования](https://github.com/maksimangeou/bankrecomendation/wiki/2.-Требования)
+3. [Архитектура](https://github.com/maksimangeou/bankrecomendation/wiki/3.-Архитектура)
+4. [REST API документация](https://github.com/maksimangeou/bankrecomendation/wiki/4.-REST-API-документация)
+5. [Развертывание](https://github.com/maksimangeou/bankrecomendation/wiki/Развертывание-проекта)
+6. [Трекер задач](https://github.com/maksimangeou/bankrecomendation/issues)
 
-## REST API
-[Swagger документация](docs/wiki/api/swagger.yaml)
 
-## Deployment
-Смотрите [deployment guide](docs/wiki/deployment.md)
-
-## GitHub Project
-[Project board](https://github.com/maksimangeou/bankrecomendation)
+* [Диаграмма компонентов приложения или диаграмма классов.](https://github.com/maksimangeou/bankrecomendation/wiki/Диаграмма-компонентов-приложения-или-диаграмма-классов.)
+* [Диаграмма поведения (Activity Diagram)](https://github.com/maksimangeou/bankrecomendation/wiki/Диаграмма-поведения-(Activity-Diagram))
+* [Диаграмма развертывания](https://github.com/maksimangeou/bankrecomendation/wiki/Диаграмма-развертывания)
